@@ -33,6 +33,7 @@
         'Чтобы включить регистрацию и вход, укажи URL Supabase и публичный ключ в файле supabase-config.js. Секретные ключи сюда добавлять нельзя.': 'To enable sign-up and sign-in, add your Supabase URL and public key to supabase-config.js. Do not put secret keys here.',
         'Сначала опубликуй сайт на HTTPS, затем добавь его адрес в разрешённые URL в настройках Supabase Auth.': 'Deploy the site over HTTPS first, then add its address to the allowed URLs in Supabase Auth settings.',
         'Проверь email и пароль. Если аккаунт новый, сначала зарегистрируйся.': 'Check your email and password. If this is a new account, sign up first.',
+        'Не удалось зарегистрироваться. Проверь email и попробуй ещё раз.': 'Could not create the account. Check the email address and try again.',
         'Не удалось обновить пароль. Запроси новый код восстановления.': 'Could not update the password. Request a new recovery code.',
         'Произошла ошибка. Попробуй ещё раз.': 'Something went wrong. Please try again.'
     };
@@ -46,11 +47,11 @@
         return translations[value] || text(value);
     }
 
-    function setMessage(element, message, isError = false) {
+    function setMessage(element, message, isError = false, details = '') {
         if (!element) return;
         element.dataset.messageKey = message || '';
         element.dataset.messageError = String(isError);
-        element.textContent = authText(message);
+        element.textContent = `${authText(message)}${details ? ` (${details})` : ''}`;
         element.classList.toggle('hidden', !message);
         element.classList.toggle('border-rose-200', isError);
         element.classList.toggle('bg-rose-50', isError);
@@ -58,6 +59,10 @@
         element.classList.toggle('border-emerald-200', !isError);
         element.classList.toggle('bg-emerald-50', !isError);
         element.classList.toggle('text-emerald-800', !isError);
+    }
+
+    function errorDetails(error) {
+        return typeof error?.message === 'string' ? error.message.trim() : '';
     }
 
     function getSafeNextPath() {
@@ -196,7 +201,7 @@
             const { data: { session }, error } = await supabaseClient.auth.getSession();
             if (error) {
                 console.error('UniMatch session read error:', error);
-                setMessage(formMessage, 'Не удалось подключиться к Supabase. Проверь URL проекта и публичный ключ.', true);
+                setMessage(formMessage, 'Не удалось подключиться к Supabase. Проверь URL проекта и публичный ключ.', true, errorDetails(error));
             }
             if (session?.user && mode !== 'new-password') displayUser(session.user);
             else displaySignedOut();
@@ -252,7 +257,7 @@
                 setMessage(formMessage, 'Код отправлен повторно.');
             } catch (error) {
                 console.error('UniMatch email code resend error:', error);
-                setMessage(formMessage, 'Не удалось повторно отправить код. Попробуй ещё раз позже.', true);
+                setMessage(formMessage, 'Не удалось повторно отправить код. Попробуй ещё раз позже.', true, errorDetails(error));
             } finally {
                 resendButton.disabled = !supabaseClient;
             }
@@ -343,14 +348,16 @@
                 }
             } catch (error) {
                 console.error('UniMatch authentication error:', error);
-                const message = submittedMode === 'reset'
+                const message = submittedMode === 'signup'
+                    ? 'Не удалось зарегистрироваться. Проверь email и попробуй ещё раз.'
+                    : submittedMode === 'reset'
                     ? 'Не удалось отправить письмо. Проверь email и настройки SMTP в Supabase.'
                     : submittedMode === 'verify-signup' || submittedMode === 'verify-reset'
                         ? 'Не удалось проверить код. Проверь его или запроси новый.'
                         : submittedMode === 'new-password'
                             ? 'Не удалось обновить пароль. Запроси новый код восстановления.'
                             : 'Проверь email и пароль. Если аккаунт новый, сначала зарегистрируйся.';
-                setMessage(formMessage, message, true);
+                setMessage(formMessage, message, true, errorDetails(error));
             } finally {
                 submitButton.disabled = !supabaseClient;
             }
@@ -376,7 +383,7 @@
         initialize().catch(error => {
             console.error('UniMatch authentication initialization failed:', error);
             const message = document.getElementById('auth-message');
-            setMessage(message, 'Не удалось подключиться к Supabase. Проверь URL проекта и публичный ключ.', true);
+            setMessage(message, 'Не удалось подключиться к Supabase. Проверь URL проекта и публичный ключ.', true, errorDetails(error));
         });
     });
 })();
