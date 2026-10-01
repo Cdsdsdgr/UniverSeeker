@@ -845,11 +845,14 @@
 
         async function loadUniversityCatalog() {
             const status = document.getElementById('catalog-load-error');
+            const isGitHubPages = window.location.hostname === 'github.io'
+                || window.location.hostname.endsWith('.github.io');
             try {
-                const response = await fetch('/api/universities', { cache: 'no-store' });
-                if (!response.ok) throw new Error(`Catalog API returned HTTP ${response.status}`);
+                const catalogUrl = isGitHubPages ? './universities_seed.json' : '/api/universities';
+                const response = await fetch(catalogUrl, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`Catalog request returned HTTP ${response.status}`);
                 const catalog = await response.json();
-                if (!Array.isArray(catalog)) throw new Error('Catalog API returned an invalid response');
+                if (!Array.isArray(catalog)) throw new Error('Catalog request returned an invalid response');
 
                 UNIVERSITIES_DATA = catalog;
                 status.classList.add('hidden');
@@ -857,10 +860,14 @@
                 applyFilters();
                 renderTrackerView();
             } catch (error) {
-                console.error('Could not load the SQLite university catalog:', error);
+                console.error('Could not load the university catalog:', error);
                 status.textContent = currentLanguage === 'en'
-                    ? 'Could not connect to the SQLite catalog. Start it with “python server.py”; the built-in sample catalog is shown for now.'
-                    : 'Не удалось подключиться к каталогу SQLite. Запустите сервер командой «python server.py»; пока показан встроенный пример каталога.';
+                    ? isGitHubPages
+                        ? 'Could not load the catalog data file. Check that universities_seed.json is published alongside the site.'
+                        : 'Could not load the SQLite catalog. Start the server with “python server.py”; the built-in sample catalog is shown for now.'
+                    : isGitHubPages
+                        ? 'Не удалось загрузить файл каталога. Проверьте, что universities_seed.json опубликован вместе с сайтом.'
+                        : 'Не удалось подключиться к каталогу SQLite. Запустите сервер командой «python server.py»; пока показан встроенный пример каталога.';
                 status.classList.remove('hidden');
             }
         }
