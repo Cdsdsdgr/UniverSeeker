@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru" class="min-h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8fafc">
+    <title>Вход и регистрация — UniverSeeker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] } } } };
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        @media (max-width: 399px) {
+            .top-nav-label, .compact-nav-label { display: none !important; }
+            .top-nav { gap: 0.125rem; }
+            .top-nav-link { padding-left: 0.375rem !important; padding-right: 0.375rem !important; }
+            .top-nav-link i { margin-right: 0 !important; }
+        }
+    </style>
+</head>
+<body data-page-title="Вход и регистрация — UniverSeeker" class="min-h-screen text-slate-800 antialiased selection:bg-blue-500 selection:text-white">
+    <script src="warning-banner.js"></script>
+    <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur">
+        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="hou.html" class="flex items-center gap-3" aria-label="UniverSeeker — каталог университетов">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-800 to-blue-500 text-white shadow-md">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </span>
+                <span class="bg-gradient-to-r from-blue-800 via-blue-600 to-blue-500 bg-clip-text text-lg font-extrabold tracking-tight text-transparent sm:text-xl">UniverSeeker</span>
+            </a>
+            <nav class="top-nav flex items-center gap-1 sm:gap-2" aria-label="Основная навигация">
+                <a href="hou.html" class="top-nav-link rounded-xl px-2 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 sm:px-4">
+                    <i class="fa-solid fa-compass mr-1.5"></i><span class="top-nav-label">Каталог вузов</span><span class="compact-nav-label hidden max-[399px]:inline">Каталог</span>
+                </a>
+                <a href="account.html" class="top-nav-link rounded-xl px-2 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 sm:px-4">
+                    <i class="fa-solid fa-list-check mr-1.5"></i><span class="top-nav-label">Мой кабинет</span><span class="compact-nav-label hidden max-[399px]:inline">Кабинет</span>
+                </a>
+                <button data-language-toggle onclick="toggleLanguage()" class="rounded-lg border border-slate-200 px-2 py-2 text-xs font-extrabold text-slate-600 transition hover:bg-slate-100 sm:px-3" aria-label="Switch language">EN</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mx-auto flex max-w-7xl justify-center px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+        <section class="w-full max-w-md space-y-6">
+            <div class="text-center">
+                <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-blue-700"><i class="fa-solid fa-user-graduate"></i></span>
+                <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-slate-900">Твой аккаунт UniverSeeker</h1>
+                <p class="mt-2 text-sm leading-relaxed text-slate-500">Создай аккаунт, чтобы следить за планом поступления.</p>
+            </div>
+
+            <div id="auth-setup-notice" class="hidden rounded-2xl border p-4 text-sm leading-relaxed" role="status"></div>
+            <div id="auth-message" class="hidden rounded-2xl border p-4 text-sm leading-relaxed" role="status"></div>
+
+            <form id="auth-form" class="space-y-4 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-7">
+                <div id="auth-mode-tabs" class="grid grid-cols-2 rounded-xl bg-slate-100 p-1">
+                    <button type="button" data-auth-mode="login" class="rounded-lg px-3 py-2 text-sm font-bold transition">Вход</button>
+                    <button type="button" data-auth-mode="signup" class="rounded-lg px-3 py-2 text-sm font-bold transition">Регистрация</button>
+                </div>
+
+                <div id="display-name-field" class="hidden space-y-1.5">
+                    <label for="display-name" class="text-sm font-bold text-slate-700">Имя</label>
+                    <input id="display-name" name="name" type="text" autocomplete="name" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                </div>
+                <div class="space-y-1.5">
+                    <label for="email" class="text-sm font-bold text-slate-700">Email</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                </div>
+                <div id="otp-field" class="hidden space-y-1.5">
+                    <label id="otp-label" for="email-code" class="text-sm font-bold text-slate-700">Код из письма</label>
+                    <input id="email-code" name="email-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-center text-lg font-bold tracking-[0.4em] outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                    <p id="otp-help" class="text-xs leading-relaxed text-slate-500"></p>
+                </div>
+                <div id="password-field" class="space-y-1.5">
+                    <label id="password-label" for="password" class="text-sm font-bold text-slate-700">Пароль</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                    <p id="password-reuse-warning" class="hidden rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900" role="note">
+                        <i class="fa-solid fa-shield-halved mr-1" aria-hidden="true"></i>
+                        Не используй пароль от важных аккаунтов (почты, банка и других сервисов). Придумай уникальный пароль для UniverSeeker.
+                    </p>
+                </div>
+                <div id="password-confirmation-field" class="hidden space-y-1.5">
+                    <label for="password-confirmation" class="text-sm font-bold text-slate-700">Повтори пароль</label>
+                    <input id="password-confirmation" name="password-confirmation" type="password" autocomplete="new-password" minlength="8" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                </div>
+                <button id="auth-submit" type="submit" class="w-full rounded-xl bg-blue-600 px-5 py-3 font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">Вход</button>
+                <button id="forgot-password" type="button" class="w-full text-center text-sm font-semibold text-blue-700 hover:text-blue-900">Забыл пароль?</button>
+                <button id="resend-code" type="button" class="hidden w-full text-center text-sm font-semibold text-blue-700 hover:text-blue-900">Отправить код повторно</button>
+                <button id="back-to-login" type="button" class="hidden w-full text-center text-sm font-semibold text-slate-500 hover:text-slate-800">Вернуться ко входу</button>
+            </form>
+
+            <section id="auth-signed-in" class="hidden space-y-4 rounded-3xl border border-slate-200/80 bg-white p-6 text-center shadow-sm">
+                <i class="fa-solid fa-circle-check text-4xl text-emerald-500"></i>
+                <h2 class="text-xl font-extrabold text-slate-900">Ты вошёл в аккаунт</h2>
+                <p id="signed-in-email" class="break-all text-sm text-slate-500"></p>
+                <a href="account.html" class="block rounded-xl bg-blue-600 px-5 py-3 font-bold text-white transition hover:bg-blue-700">Открыть кабинет</a>
+                <button type="button" data-auth-signout class="text-sm font-semibold text-slate-500 hover:text-rose-600">Выйти</button>
+            </section>
+
+            <p class="text-center text-xs leading-relaxed text-slate-400">Пока аккаунт не подключён, данные заявок продолжают храниться только в этом браузере.</p>
+        </section>
+    </main>
+
+    <script src="supabase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="i18n.js"></script>
+    <script>UniMatchI18n.init();</script>
+    <script src="auth.js"></script>
+</body>
+</html>

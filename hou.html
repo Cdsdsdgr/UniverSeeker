@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="ru" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniverSeeker — Гранты и Трекер Поступления</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="application-checklist.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f6ff',
+                            100: '#e0edff',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            800: '#1e3a8a',
+                            900: '#1e1b4b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .modal-blur { backdrop-filter: blur(8px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        @media (max-width: 399px) {
+            .top-nav-label, .compact-nav-label { display: none !important; }
+            .top-nav { gap: 0.125rem; }
+            .top-nav-link { padding-left: 0.375rem !important; padding-right: 0.375rem !important; }
+            .top-nav-link i { margin-right: 0 !important; }
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <script src="warning-banner.js"></script>
+
+    <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 shadow-sm backdrop-blur">
+        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="hou.html" onclick="switchTab('catalog')" class="flex shrink-0 items-center gap-3" aria-label="UniverSeeker — каталог университетов">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-brand-700 to-brand-500 text-white shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </span>
+                <span class="bg-gradient-to-r from-brand-800 via-brand-600 to-brand-500 bg-clip-text text-lg font-extrabold tracking-tight text-transparent sm:text-xl">UniverSeeker</span>
+            </a>
+            <nav class="top-nav flex items-center gap-1 sm:gap-2" aria-label="Основная навигация">
+                <button id="nav-catalog" onclick="switchTab('catalog')" class="top-nav-link rounded-xl bg-brand-50 px-2 py-2 text-sm font-bold text-brand-700 transition sm:px-4">
+                    <i class="fa-solid fa-compass mr-1.5"></i><span class="top-nav-label">Каталог вузов</span><span class="compact-nav-label hidden max-[399px]:inline">Каталог</span>
+                </button>
+                <a id="nav-tracker" href="account.html" class="top-nav-link relative rounded-xl px-2 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 sm:px-4">
+                    <i class="fa-solid fa-list-check mr-1.5"></i><span class="top-nav-label">Мой кабинет</span><span class="compact-nav-label hidden max-[399px]:inline">Кабинет</span>
+                    <span id="tracker-badge" class="ml-1 hidden rounded-full bg-brand-600 px-1.5 text-[10px] font-bold text-white">0</span>
+                </a>
+                <a href="auth.html" data-auth-guest class="top-nav-link rounded-xl px-2 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 sm:px-3" aria-label="Войти или зарегистрироваться">
+                    <i class="fa-solid fa-user mr-1 sm:mr-1.5"></i><span class="top-nav-label">Войти</span>
+                </a>
+                <div data-auth-user class="hidden max-w-36 items-center gap-2">
+                    <span data-auth-email class="hidden truncate text-xs font-semibold text-slate-600 lg:inline"></span>
+                    <button data-auth-signout class="rounded-lg px-2 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100" aria-label="Выйти"><i class="fa-solid fa-arrow-right-from-bracket"></i><span class="top-nav-label ml-1">Выйти</span></button>
+                </div>
+                <button id="language-toggle-mobile" onclick="toggleLanguage()" class="rounded-lg border border-slate-200 px-2 py-2 text-xs font-extrabold text-slate-600 transition hover:bg-slate-100 md:hidden" aria-label="Switch language">EN</button>
+                <button id="language-toggle" onclick="toggleLanguage()" class="hidden rounded-lg border border-slate-200 px-2 py-2 text-xs font-extrabold text-slate-600 transition hover:bg-slate-100 sm:px-3 md:block" aria-label="Switch language">EN</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ================= CATALOG VIEW ================= -->
+        <section id="view-catalog" class="space-y-6">
+            <!-- Hero Header -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-900 via-brand-800 to-slate-900 text-white p-6 sm:p-10 shadow-xl">
+                <div class="relative z-10 max-w-2xl space-y-3">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/30 text-brand-200 border border-brand-400/20 backdrop-blur">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Умная подборка стипендий & требований
+                    </span>
+                    <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+                        Найди идеальный университет и получи грант
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Укажи свои критерии, гражданство и желаемый уровень гранта. Получи готовый список вузов, актуальные требования (CV, видео, тесты) и темы эссе.
+                    </p>
+                    <a href="account.html" class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-brand-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-50">
+                        <i class="fa-solid fa-list-check"></i> Открыть мой кабинет
+                    </a>
+                </div>
+                <!-- Abstract decorative shapes -->
+                <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -top-12 w-48 h-48 bg-indigo-500/20 rounded-full blur-2xl pointer-events-none"></div>
+            </div>
+
+            <div id="catalog-load-error" class="hidden rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" role="status"></div>
+
+            <!-- Filters & Search Toolbar -->
+            <div id="catalog-filters" class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-4">
+                <!-- Search & Quick Controls -->
+                <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+                    <div class="relative w-full md:w-96">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="search-input" oninput="applyFilters()" placeholder="Поиск по названию или программам..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                    </div>
+                    
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <span class="text-xs font-medium text-slate-500 whitespace-nowrap"><i class="fa-solid fa-arrow-down-wide-short"></i> Сортировка:</span>
+                        <select id="sort-select" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="qs">Мировой рейтинг QS</option>
+                            <option value="the">Рейтинг THE</option>
+                            <option value="shanghai">Шанхайский рейтинг</option>
+                            <option value="name">По алфавиту</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr class="border-slate-100">
+
+                <!-- Filter Controls Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <!-- Country Selection -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">
+                            <i class="fa-solid fa-globe text-brand-500"></i> Страна
+                        </label>
+                        <select id="filter-country" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="all">Все страны</option>
+                            <option value="США">США 🇺🇸</option>
+                            <option value="Китай">Китай 🇨🇳</option>
+                            <option value="Сингапур">Сингапур 🇸🇬</option>
+                            <option value="Казахстан">Казахстан 🇰🇿</option>
+                            <option value="Великобритания">Великобритания 🇬🇧</option>
+                            <option value="Южная Корея">Южная Корея 🇰🇷</option>
+                        </select>
+                    </div>
+
+                    <!-- Residency Question Filter -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">
+                            <i class="fa-solid fa-passport text-brand-500"></i> Вы резидент?
+                        </label>
+                        <select id="filter-residency" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="all">Любое резидентство</option>
+                            <option value="yes">Да (Локальные гранты)</option>
+                            <option value="no" selected>Нет (Международный)</option>
+                        </select>
+                    </div>
+
+                    <!-- Degree Level -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">
+                            <i class="fa-solid fa-user-graduate text-brand-500"></i> Степень
+                        </label>
+                        <select id="filter-degree" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="all">Все степени</option>
+                            <option value="Бакалавриат">Бакалавриат</option>
+                            <option value="Магистратура">Магистратура</option>
+                            <option value="PhD">PhD / Докторантура</option>
+                        </select>
+                    </div>
+
+                    <!-- Scholarship Type -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">
+                            <i class="fa-solid fa-hand-holding-dollar text-brand-500"></i> Тип гранта
+                        </label>
+                        <select id="filter-funding" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="all">Все варианты</option>
+                            <option value="Full scholarship">Полный грант</option>
+                            <option value="Partial scholarship">Частичный грант</option>
+                            <option value="Self-funded">Платное / Скидка</option>
+                        </select>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <div class="flex items-end">
+                        <button onclick="resetFilters()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-2 px-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-left"></i> Сбросить
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Counter & Grid -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm font-semibold text-slate-600">Найдено университетов: <span id="universities-count" class="text-brand-600 font-bold">0</span></p>
+                </div>
+
+                <!-- University Cards Grid -->
+                <div id="university-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards injected via JavaScript -->
+                </div>
+
+                
+                <div id="empty-state" class="hidden text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
+                    <i class="fa-solid fa-building-columns text-4xl text-slate-300 mb-3"></i>
+                    <h3 class="text-lg font-bold text-slate-700">Ничего не найдено</h3>
+                    <p class="text-sm text-slate-500 max-w-sm mx-auto mt-1">Попробуйте смягчить фильтры или изменить поисковый запрос.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= TRACKER / DASHBOARD VIEW ================= -->
+        <section id="view-tracker" class="hidden space-y-6">
+           
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-brand-600"></i> Мой кабинет абитуриента
+                    </h2>
+                    <p class="text-sm text-slate-500 mt-1">Управляйте статусами заявок, отслеживайте подготовку документов и не упускайте дедлайны.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="bg-brand-50 border border-brand-100 px-4 py-2 rounded-xl text-center">
+                        <span class="block text-xs text-brand-600 font-medium">Всего в списке</span>
+                        <span id="tracker-total-count" class="text-xl font-bold text-brand-700">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saved Universities List -->
+            <div id="tracker-list" class="space-y-6">
+                <!-- Injected dynamically via JavaScript -->
+            </div>
+
+            <div id="tracker-empty" class="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 space-y-4">
+                <div class="w-16 h-16 rounded-full bg-brand-50 text-brand-500 flex items-center justify-center mx-auto text-2xl">
+                    <i class="fa-solid fa-bookmark"></i>
+                </div>
+                <div class="max-w-md mx-auto space-y-1">
+                    <h3 class="text-lg font-bold text-slate-800">Ваш список пуст</h3>
+                    <p class="text-sm text-slate-500">Перейдите в каталог университетов и нажмите «Добавить в Мой кабинет», чтобы начать отслеживать свой прогресс поступления.</p>
+                </div>
+                <button onclick="switchTab('catalog')" class="px-5 py-2.5 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 transition shadow-sm">
+                    Перейти в Каталог
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- UNIVERSITY DETAILS MODAL -->
+    <div id="uni-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-blur bg-slate-900/60 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-100 overflow-hidden my-auto">
+            
+            <!-- Modal Header -->
+            <div id="modal-header" class="relative flex-shrink-0 bg-cover bg-center text-white">
+                <img id="modal-campus-image" src="" alt="" class="absolute inset-0 z-0 h-full w-full object-cover" onerror="handleCampusImageError(this)">
+                <div class="absolute inset-0 z-0 bg-gradient-to-r from-slate-950/90 via-slate-900/75 to-brand-950/40 pointer-events-none"></div>
+                <div class="relative z-10 p-6 pt-12">
+                <button onclick="closeModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+                <div class="flex items-center gap-3 mb-2">
+                    <span id="modal-flag" class="text-2xl">🇺🇸</span>
+                    <span id="modal-country" class="text-xs uppercase tracking-wider font-semibold text-brand-300">США</span>
+                    <span id="modal-grant-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Full Scholarship</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <img id="modal-logo" src="" alt="" class="h-12 w-12 rounded-xl border border-white/30 bg-white p-1 object-contain shadow-lg">
+                    <h2 id="modal-title" class="text-2xl sm:text-3xl font-extrabold text-white">Princeton University</h2>
+                </div>
+                <p id="modal-sub" class="text-sm text-slate-300 mt-1">Принстон, Нью-Джерси</p>
+                <a id="modal-image-credit" href="#" target="_blank" rel="noopener noreferrer" class="mt-3 inline-block text-[10px] text-white/70 underline decoration-white/30 underline-offset-2">Фото кампуса · Wikimedia Commons</a>
+
+                <!-- Ranking Pill Badges -->
+                <div class="flex flex-wrap gap-2 mt-4 text-xs font-semibold">
+                    <span class="bg-white/10 border border-white/10 px-2.5 py-1 rounded-lg text-slate-200">QS: <strong id="modal-qs" class="text-white">#1</strong></span>
+                    <span class="bg-white/10 border border-white/10 px-2.5 py-1 rounded-lg text-slate-200">THE: <strong id="modal-the" class="text-white">#1</strong></span>
+                    <span class="bg-white/10 border border-white/10 px-2.5 py-1 rounded-lg text-slate-200">Shanghai: <strong id="modal-shanghai" class="text-white">#1</strong></span>
+                </div>
+                </div>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="p-6 space-y-6 overflow-y-auto custom-scrollbar flex-grow">
+
+                <!-- Requirement Breakdown Badges -->
+                <div>
+                    <h4 class="text-xs font-extrabold uppercase text-slate-400 tracking-wider mb-3">
+                        <i class="fa-solid fa-list-check text-brand-500"></i> Критерии и Требования
+                    </h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                            <span class="block text-[11px] font-bold text-slate-400 uppercase">CV / Резюме</span>
+                            <span id="modal-req-cv" class="text-sm font-bold text-slate-800">Обязательно</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                            <span class="block text-[11px] font-bold text-slate-400 uppercase">Видеопрезентация</span>
+                            <span id="modal-req-video" class="text-sm font-bold text-slate-800">Опционально</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                            <span class="block text-[11px] font-bold text-slate-400 uppercase">Интервью</span>
+                            <span id="modal-req-interview" class="text-sm font-bold text-slate-800">По приглашению</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                            <span class="block text-[11px] font-bold text-slate-400 uppercase">Тесты</span>
+                            <span id="modal-req-tests" class="text-sm font-bold text-slate-800">IELTS 7.5+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Degree and Funding Info -->
+                <div class="bg-brand-50/60 border border-brand-100 rounded-2xl p-4 text-sm space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-600 font-medium">Доступные степени:</span>
+                        <span id="modal-degrees" class="font-bold text-slate-900">Бакалавриат, Магистратура</span>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-extrabold uppercase text-slate-400 tracking-wider mb-3">
+                            <i class="fa-solid fa-hand-holding-dollar text-brand-500"></i> <span>Гранты по уровню обучения</span>
+                        </h4>
+                        <div id="modal-funding-by-degree" class="grid grid-cols-1 gap-2 sm:grid-cols-3"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-600 font-medium">Для локальных резидентов:</span>
+                        <span id="modal-residency-access" class="font-bold text-slate-900">Да</span>
+                    </div>
+                </div>
+
+                <!-- Recommended Essay Prompts -->
+                <div>
+                    <h4 class="text-xs font-extrabold uppercase text-slate-400 tracking-wider mb-3">
+                        <i class="fa-solid fa-pen-nib text-brand-500"></i> Актуальные Темы Эссе / Motivation Prompts
+                    </h4>
+                    <ul id="modal-essays-list" class="space-y-2.5">
+                        <!-- Dynamic list -->
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+                <a id="modal-link-official" href="#" target="_blank" class="w-full sm:w-auto px-4 py-2.5 text-slate-600 hover:text-slate-900 font-semibold text-sm flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Официальный сайт
+                </a>
+                <button id="modal-add-btn" onclick="" class="w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl transition shadow-md shadow-brand-500/20 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Добавить в Мой кабинет
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Used only if the SQLite API is unavailable (for example, when opened as a file).
+        const UNIVERSITY_DATA_FALLBACK = [
+            {
+                id: 'princeton',
+                name: 'Princeton University',
+                country: 'США',
+                flag: '🇺🇸',
+                city: 'Принстон, Нью-Джерси',
+                qsRank: 17,
+                theRank: 6,
+                shanghaiRank: 5,
+                residencyAvailable: false, // Available to international as well as domestic
+                degrees: ['Бакалавриат', 'Магистратура', 'PhD'],
+                fundingType: 'Full scholarship',
+                fundingByDegree: { 'Бакалавриат': 'Full scholarship', 'Магистратура': 'Partial scholarship', 'PhD': 'Full scholarship' },
+                campusImage: 'assets/campuses/princeton.jpg',
+                campusImageSource: 'https://commons.wikimedia.org/wiki/File:At_Princeton_University_2024_010.jpg',
+                campusImageCredit: 'Фото: Mike Peel · CC BY-SA 4.0',
+                reqCV: 'Обязательно',
+                reqVideo: 'Рекомендуется (Graded paper)',
+                reqInterview: 'По приглашению',
+                reqTests: 'IELTS 7.5+ / TOEFL 100 / SAT (Optional)',
+                satRequired: false,
+                essays: [
+                    'Принстон ценит служение обществу. Расскажите, как ваш опыт повлиял на ваше сообщество?',
+                    'Какая идея или концепция вызывает у вас искренний восторг и почему?'
+                ],
+                officialUrl: 'https://www.princeton.edu'
+            },
+            {
+                id: 'tsinghua',
+                name: 'Tsinghua University',
+                country: 'Китай',
+                flag: '🇨🇳',
+                city: 'Пекин',
+                qsRank: 20,
+                theRank: 12,
+                shanghaiRank: 22,
+                residencyAvailable: false,
+                degrees: ['Бакалавриат', 'Магистратура', 'PhD'],
+                fundingType: 'Full scholarship', // Chinese Government Scholarship (CSC)
+                fundingByDegree: { 'Бакалавриат': 'Full scholarship', 'Магистратура': 'Full scholarship', 'PhD': 'Full scholarship' },
+                campusImage: 'assets/campuses/tsinghua.jpg',
+                campusImageSource: 'https://commons.wikimedia.org/wiki/File:JORG-PLICKAT_GATE_OF_THE_WINDS_2012_TSINGHUA_CAMPUS_BEIJING.JPG',
+                campusImageCredit: 'Фото: Jörg Plickat · CC BY-SA 3.0',
+                reqCV: 'Обязательно (Европа/Азия формат)',
+                reqVideo: 'Обязательно (3 мин)',
+                reqInterview: 'Обязательно (Онлайн)',
+                reqTests: 'HSK 5/6 (для кит.) / IELTS 6.5+ (для англ.)',
+                satRequired: false,
+                essays: [
+                    'Почему вы выбрали Университет Цинхуа и Китая для вашего академического роста?',
+                    'Опишите ваш самый сложный исследовательский или академический проект.'
+                ],
+                officialUrl: 'https://www.tsinghua.edu.cn/en/'
+            },
+            {
+                id: 'nus',
+                name: 'National University of Singapore (NUS)',
+                country: 'Сингапур',
+                flag: '🇸🇬',
+                city: 'Сингапур',
+                qsRank: 8,
+                theRank: 19,
+                shanghaiRank: 71,
+                residencyAvailable: false,
+                degrees: ['Бакалавриат', 'Магистратура', 'PhD'],
+                fundingType: 'Full scholarship',
+                fundingByDegree: { 'Бакалавриат': ['Partial scholarship', 'Full scholarship'], 'Магистратура': 'Partial scholarship', 'PhD': 'Full scholarship' },
+                campusImage: 'assets/campuses/nus.jpg',
+                campusImageSource: 'https://commons.wikimedia.org/wiki/File:National_University_of_Singapore_Entrance_C_17Jul2026.jpg',
+                campusImageCredit: 'Фото: RFNirmala · CC BY 4.0',
+                reqCV: 'Обязательно',
+                reqVideo: 'Не требуется',
+                reqInterview: 'Для стипендиатов',
+                reqTests: 'IELTS 7.0 / SAT / ACT',
+                satRequired: true,
+                essays: [
+                    'Расскажите о личном качестве или опыте, которым вы гордитесь больше всего.',
+                    'Каким образом выбранное направление поможет вам решить глобальные проблемы?'
+                ],
+                officialUrl: 'https://nus.edu.sg'
+            },
+            {
+                id: 'nu_kz',
+                name: 'Nazarbayev University',
+                country: 'Казахстан',
+                flag: '🇰🇿',
+                city: 'Астана',
+                qsRank: 106,
+                theRank: 301,
+                shanghaiRank: 501,
+                residencyAvailable: true, // Specific quota for KZ citizens + international grants
+                degrees: ['Бакалавриат', 'Магистратура', 'PhD'],
+                fundingType: 'Full scholarship',
+                fundingByDegree: { 'Бакалавриат': 'Full scholarship', 'Магистратура': 'Full scholarship', 'PhD': 'Full scholarship' },
+                campusImage: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=85',
+                campusImageSource: 'https://unsplash.com/license',
+                campusImageCredit: 'Иллюстративное фото · Unsplash',
+                reqCV: 'Обязательно',
+                reqVideo: 'По запросу программы',
+                reqInterview: 'Для финального этапа',
+                reqTests: 'IELTS 6.5-7.0 / SAT 1240+ / NUET',
+                satRequired: true,
+                essays: [
+                    'Напишите мотивационное письмо о ваших академических целях и вкладе в развитие региона.',
+                    'Опишите жизненное препятствие и то, как вы его преодолели.'
+                ],
+                officialUrl: 'https://nu.edu.kz'
+            },
+            {
+                id: 'oxford',
+                name: 'University of Oxford',
+                country: 'Великобритания',
+                flag: '🇬🇧',
+                city: 'Оксфорд',
+                qsRank: 3,
+                theRank: 1,
+                shanghaiRank: 7,
+                residencyAvailable: false,
+                degrees: ['Бакалавриат', 'Магистратура', 'PhD'],
+                fundingType: 'Partial scholarship', // Rhodes/Clarendon fully funded for select
+                fundingByDegree: { 'Бакалавриат': 'Partial scholarship', 'Магистратура': 'Partial scholarship', 'PhD': 'Full scholarship' },
+                campusImage: 'assets/campuses/oxford.jpg',
+                campusImageSource: 'https://commons.wikimedia.org/wiki/File:Radcliffe_Camera,_Oxford_-_Oct_2006.jpg',
+                campusImageCredit: 'Фото: David Iliff · CC BY-SA 3.0',
+                reqCV: 'Обязательно (Академическое CV)',
+                reqVideo: 'Не требуется',
+                reqInterview: 'Обязательно строгое собеседование',
+                reqTests: 'IELTS 7.5 / TSA / MAT / HAT',
+                satRequired: false,
+                essays: [
+                    'Statement of Purpose: Продемонстрируйте глубокую академическую подготовку и критическое мышление в вашей дисциплине.'
+                ],
+                officialUrl: 'https://www.ox.ac.uk'
+            },
+            {
+                id: 'kaist',
+                name: 'KAIST',
+                country: 'Южная Корея',
+                flag: '🇰🇷',
+                city: 'Тэджон',
+                qsRank: 53,
+                theRank: 83,
+                shanghaiRank: 101,
+                residencyAvailable: false,
+                degrees: ['Бакалавриат', 'Магистратура', 'PhD'],
+                fundingType: 'Full scholarship',
+                fundingByDegree: { 'Бакалавриат': 'Full scholarship', 'Магистратура': 'Full scholarship', 'PhD': 'Full scholarship' },
+                campusImage: 'assets/campuses/kaist.jpg',
+                campusImageSource: 'https://commons.wikimedia.org/wiki/File:IBS%E2%80%93KAIST_Campus_Building.jpg',
+                campusImageCredit: 'Фото: Rickinasia · CC BY-SA 4.0',
+                reqCV: 'Обязательно',
+                reqVideo: 'Не требуется',
+                reqInterview: 'По усмотрению комиссии',
+                reqTests: 'IELTS 6.5 / TOEFL 83',
+                satRequired: false,
+                essays: [
+                    'Опишите ваш интерес к STEM-дисциплинам и ваши планы по исследованиям в KAIST.',
+                    'Ваш опыт командной работы в инженерии или науке.'
+                ],
+                officialUrl: 'https://www.kaist.ac.kr/en/'
+            },
+            {
+                id: 'xidian',
+                name: 'Xidian University',
+                country: 'Китай',
+                flag: '🇨🇳',
+                city: 'Сиань',
+                qsRank: 801,
+                theRank: 601,
+                shanghaiRank: 401,
+                residencyAvailable: false,
+                degrees: ['Бакалавриат', 'Магистратура'],
+                fundingType: 'Full scholarship', // CSC & Silk Road Scholarship
+                fundingByDegree: { 'Бакалавриат': 'Full scholarship', 'Магистратура': 'Full scholarship' },
+                campusImage: 'assets/campuses/xidian.jpg',
+                campusImageSource: 'https://commons.wikimedia.org/wiki/File:North_Campus_Main_Gate_of_Xidian_University.jpg',
+                campusImageCredit: 'Фото: Nishino Asuka · CC BY-SA 4.0',
+                reqCV: 'Обязательно',
+                reqVideo: 'Обязательно',
+                reqInterview: 'Онлайн тесты',
+                reqTests: 'IELTS 6.0 / HSK 4+',
+                satRequired: false,
+                essays: [
+                    'Учебный план (Study Plan) объемом от 800 слов на тему вашей будущей специальности.'
+                ],
+                officialUrl: 'https://en.xidian.edu.cn'
+            }
+        ];
+        let UNIVERSITIES_DATA = UNIVERSITY_DATA_FALLBACK;
+
+        // Default Checklist Template
+        const TEXT_EN = {
+            'Данные о поступлении носят ознакомительный характер — проверяйте требования на сайтах вузов.': 'Admission information is for guidance only — confirm requirements on university websites.',
+            'Закрыть предупреждение': 'Dismiss warning',
+            'Каталог вузов': 'University catalog',
+            'Мой кабинет': 'My dashboard',
+            'Умная подборка стипендий & требований': 'Scholarship and requirements finder',
+            'Найди идеальный университет и получи грант': 'Find the right university and scholarship',
+            'Укажи свои критерии, гражданство и желаемый уровень гранта. Получи готовый список вузов, актуальные требования (CV, видео, тесты) и темы эссе.': 'Choose your criteria, citizenship, and preferred funding. Explore universities, admission requirements, and essay prompts.',
+            'Открыть мой кабинет': 'Open my dashboard',
+            'Поиск по названию или программам...': 'Search universities or programs...',
+            'Сортировка:': 'Sort by:',
+            'Мировой рейтинг QS': 'QS world ranking',
+            'Рейтинг THE': 'THE ranking',
+            'Шанхайский рейтинг': 'Shanghai ranking',
+            'По алфавиту': 'Alphabetical',
+            'Страна': 'Country',
+            'Все страны': 'All countries',
+            'США': 'United States',
+            'Китай': 'China',
+            'Сингапур': 'Singapore',
+            'Казахстан': 'Kazakhstan',
+            'Великобритания': 'United Kingdom',
+            'Южная Корея': 'South Korea',
+            'Вы резидент?': 'Are you a resident?',
+            'Любое резидентство': 'Any residency',
+            'Да (Локальные гранты)': 'Yes (local scholarships)',
+            'Нет (Международный)': 'No (international)',
+            'Степень': 'Degree',
+            'Все степени': 'All degrees',
+            'Бакалавриат': 'Bachelor’s',
+            'Магистратура': 'Master’s',
+            'PhD / Докторантура': 'PhD / Doctorate',
+            'Полный грант': 'Full scholarship',
+            'Частичный грант': 'Partial scholarship',
+            'Платное / Скидка': 'Self-funded / Discount',
+            'Сбросить': 'Reset',
+            'Найдено университетов:': 'Universities found:',
+            'Ничего не найдено': 'No universities found',
+            'Попробуйте смягчить фильтры или изменить поисковый запрос.': 'Try relaxing the filters or changing your search.',
+            'Подробнее': 'Details',
+            'Сохранено': 'Saved',
+            'В трекер': 'Save',
+            'Полный грант': 'Full scholarship',
+            'Гранты по уровню обучения': 'Scholarships by degree level',
+            'Критерии и Требования': 'Admission requirements',
+            'Видеопрезентация': 'Video presentation',
+            'Интервью': 'Interview',
+            'Тесты': 'Tests',
+            'Доступные степени:': 'Available degrees:',
+            'Для локальных резидентов:': 'Local resident eligibility:',
+            'Да (включая локальные квоты)': 'Yes (including local quotas)',
+            'Только международные конкурсы': 'International applicants only',
+            'Актуальные Темы Эссе / Motivation Prompts': 'Essay and motivation prompts',
+            'Официальный сайт': 'Official website',
+            'Добавить в Мой кабинет': 'Add to my dashboard',
+            'Сохранено в кабинете': 'Saved to dashboard',
+            'Ваш список пуст': 'Your list is empty',
+            'Перейдите в каталог университетов и нажмите «Добавить в Мой кабинет», чтобы начать отслеживать свой прогресс поступления.': 'Browse the university catalog and save a university to start tracking your applications.',
+            'Перейти в Каталог': 'Go to catalog',
+            'CV / Резюме': 'CV / Resume',
+            'Обязательно': 'Required',
+            'Опционально': 'Optional',
+            'По приглашению': 'By invitation',
+            'Обязательно (Академическое CV)': 'Required (academic CV)',
+            'Принстон, Нью-Джерси': 'Princeton, New Jersey',
+            'Пекин': 'Beijing',
+            'Астана': 'Astana',
+            'Оксфорд': 'Oxford',
+            'Тэджон': 'Daejeon',
+            'Сиань': 'Xi’an',
+            'HSK 5/6 (для кит.) / IELTS 6.5+ (для англ.)': 'HSK 5/6 (Chinese-taught) / IELTS 6.5+ (English-taught)',
+            'Рекомендуется (Graded paper)': 'Recommended (graded paper)',
+            'Для стипендиатов': 'For scholarship applicants',
+            'По запросу программы': 'Program-specific',
+            'Для финального этапа': 'At the final stage',
+            'Обязательно строгое собеседование': 'Required formal interview',
+            'По усмотрению комиссии': 'At the committee’s discretion',
+            'Онлайн тесты': 'Online tests',
+            'Обязательно (Европа/Азия формат)': 'Required (European/Asian format)',
+            'Обязательно (3 мин)': 'Required (3 minutes)',
+            'Обязательно (Онлайн)': 'Required (online)',
+            'Не требуется': 'Not required',
+            'IELTS 7.5+ / TOEFL 100 / SAT (Optional)': 'IELTS 7.5+ / TOEFL 100 / SAT (optional)',
+            'IELTS 7.0 / SAT / ACT': 'IELTS 7.0 / SAT / ACT',
+            'IELTS 6.5-7.0 / SAT 1240+ / NUET': 'IELTS 6.5–7.0 / SAT 1240+ / NUET',
+            'IELTS 7.5 / TSA / MAT / HAT': 'IELTS 7.5 / TSA / MAT / HAT',
+            'IELTS 6.5 / TOEFL 83': 'IELTS 6.5 / TOEFL 83',
+            'IELTS 6.0 / HSK 4+': 'IELTS 6.0 / HSK 4+',
+            'Ваш список пуст': 'Your list is empty',
+            'Принстон ценит служение обществу. Расскажите, как ваш опыт повлиял на ваше сообщество?': 'Princeton values service to society. How has your experience shaped your community?',
+            'Какая идея или концепция вызывает у вас искренний восторг и почему?': 'What idea or concept genuinely excites you, and why?',
+            'Почему вы выбрали Университет Цинхуа и Китая для вашего академического роста?': 'Why did you choose Tsinghua University and China for your academic growth?',
+            'Опишите ваш самый сложный исследовательский или академический проект.': 'Describe your most challenging research or academic project.',
+            'Расскажите о личном качестве или опыте, которым вы гордитесь больше всего.': 'Tell us about a personal quality or experience you are most proud of.',
+            'Каким образом выбранное направление поможет вам решить глобальные проблемы?': 'How will your chosen field help you address global challenges?',
+            'Напишите мотивационное письмо о ваших академических целях и вкладе в развитие региона.': 'Describe your academic goals and how you hope to contribute to the region.',
+            'Опишите жизненное препятствие и то, как вы его преодолели.': 'Describe a life challenge and how you overcame it.',
+            'Statement of Purpose: Продемонстрируйте глубокую академическую подготовку и критическое мышление в вашей дисциплине.': 'Statement of Purpose: Demonstrate strong academic preparation and critical thinking in your discipline.',
+            'Опишите ваш интерес к STEM-дисциплинам и ваши планы по исследованиям в KAIST.': 'Describe your interest in STEM and your research plans at KAIST.',
+            'Ваш опыт командной работы в инженерии или науке.': 'Describe your teamwork experience in engineering or science.',
+            'Учебный план (Study Plan) объемом от 800 слов на тему вашей будущей специальности.': 'Write an 800-word study plan about your intended field of study.',
+            'QS:': 'QS:',
+            'THE:': 'THE:',
+            'Shanghai:': 'Shanghai:',
+            'Степени:': 'Degrees:',
+            'Тесты:': 'Tests:',
+            'Фото кампуса · Wikimedia Commons': 'Campus photo · Wikimedia Commons',
+            'Фото кампуса': 'Campus photo',
+            'Войти': 'Sign in',
+            'Выйти': 'Sign out',
+            'Войти или зарегистрироваться': 'Sign in or create an account',
+            'Иллюстративное фото · Unsplash': 'Illustrative photo · Unsplash',
+            'Фото: Mike Peel · CC BY-SA 4.0': 'Photo: Mike Peel · CC BY-SA 4.0',
+            'Фото: Jörg Plickat · CC BY-SA 3.0': 'Photo: Jörg Plickat · CC BY-SA 3.0',
+            'Фото: RFNirmala · CC BY 4.0': 'Photo: RFNirmala · CC BY 4.0',
+            'Фото: David Iliff · CC BY-SA 3.0': 'Photo: David Iliff · CC BY-SA 3.0',
+            'Фото: Rickinasia · CC BY-SA 4.0': 'Photo: Rickinasia · CC BY-SA 4.0',
+            'Фото: Nishino Asuka · CC BY-SA 4.0': 'Photo: Nishino Asuka · CC BY-SA 4.0',
+            'UniverSeeker — Гранты и Трекер Поступления': 'UniverSeeker — Scholarships and Application Tracker',
+            'Статус:': 'Status:',
+            'Удалить университет из кабинета': 'Remove university from dashboard',
+            'Подготовить и оформить CV / Резюме': 'Prepare CV / resume',
+            'Сдать языковой тест (IELTS/TOEFL/HSK)': 'Take a language test (IELTS/TOEFL/HSK)',
+            'Написать и проверить Эссе / Statement of Purpose': 'Write and review an essay / personal statement',
+            'Запросить 2-3 рекомендательных письма': 'Request 2–3 recommendation letters',
+            'Перевести и заверить транскрипт оценок': 'Translate and certify academic transcripts',
+            'Записать видеопрезентацию (если требуется)': 'Record a video presentation (if required)',
+            'Подготовить и оформить CV / Резюме': 'Prepare and format CV / resume',
+            'Сдать IELTS/TOEFL/HSK': 'Take IELTS/TOEFL/HSK',
+            'Подготовить SAT': 'Prepare for the SAT',
+            'Подготовить вступительные тесты': 'Prepare for admissions tests',
+            'Записать видеопрезентацию': 'Record a video presentation',
+            'Подготовиться к интервью': 'Prepare for an interview'
+        };
+        const TEXT_EN_ENTRIES = Object.entries(TEXT_EN).sort((a, b) => b[0].length - a[0].length);
+        const FUNDING_RU = {
+            'Full scholarship': 'Полный грант',
+            'Partial scholarship': 'Частичный грант',
+            'Self-funded': 'Платное обучение'
+        };
+        let currentLanguage = localStorage.getItem('unimatch_language') === 'en' ? 'en' : 'ru';
+        const originalTextNodes = [];
+        const originalAttributes = [];
+
+        function translate(value) {
+            if (currentLanguage === 'ru') return value;
+            if (TEXT_EN[value]) return TEXT_EN[value];
+            return TEXT_EN_ENTRIES.reduce((text, [source, target]) => text.replaceAll(source, target), value);
+        }
+
+        function degreeName(value) {
+            return currentLanguage === 'en' ? (TEXT_EN[value] || value) : value;
+        }
+
+        function fundingName(value) {
+            return currentLanguage === 'en' ? value : (FUNDING_RU[value] || value);
+        }
+
+        function fundingFor(uni, degree) {
+            const funding = (uni.fundingByDegree && uni.fundingByDegree[degree]) || uni.fundingType || 'Self-funded';
+            return Array.isArray(funding) ? funding : [funding];
+        }
+
+        function captureStaticText() {
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+            while (walker.nextNode()) originalTextNodes.push({ node: walker.currentNode, text: walker.currentNode.nodeValue });
+            document.querySelectorAll('[placeholder], [title], [aria-label]').forEach(element => {
+                ['placeholder', 'title', 'aria-label'].forEach(attribute => {
+                    if (element.hasAttribute(attribute)) originalAttributes.push({ element, attribute, value: element.getAttribute(attribute) });
+                });
+            });
+        }
+
+        function applyLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'en' : 'ru';
+            document.documentElement.lang = currentLanguage;
+            document.title = translate('UniverSeeker — Гранты и Трекер Поступления');
+            originalTextNodes.forEach(({ node, text }) => {
+                if (node.isConnected) node.nodeValue = translate(text);
+            });
+            originalAttributes.forEach(({ element, attribute, value }) => {
+                if (element.isConnected) element.setAttribute(attribute, translate(value));
+            });
+            refreshDynamicFilterOptions();
+            ['language-toggle', 'language-toggle-mobile'].forEach(id => {
+                const button = document.getElementById(id);
+                if (button) {
+                    button.textContent = currentLanguage === 'en' ? 'RU' : 'EN';
+                    button.setAttribute('aria-label', currentLanguage === 'en' ? 'Switch language to Russian' : 'Switch language to English');
+                }
+            });
+            applyFilters();
+            renderTrackerView();
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ru' ? 'en' : 'ru';
+            try {
+                localStorage.setItem('unimatch_language', currentLanguage);
+            } catch (error) {
+                console.error('UniMatch language preference could not be saved:', error);
+            }
+            applyLanguage();
+        }
+
+        // State Management
+        let savedTracker = JSON.parse(localStorage.getItem('unimatch_tracker') || '[]');
+
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', () => {
+            captureStaticText();
+            applyLanguage();
+            applyFilters();
+            updateTrackerBadges();
+            renderTrackerView();
+            loadUniversityCatalog();
+        });
+        window.addEventListener('storage', event => {
+            if (event.key !== 'unimatch_language') return;
+            currentLanguage = event.newValue === 'en' ? 'en' : 'ru';
+            applyLanguage();
+        });
+
+        // Tab Switching Logic
+        function switchTab(tab) {
+            const catalogView = document.getElementById('view-catalog');
+            const trackerView = document.getElementById('view-tracker');
+            const navCatalog = document.getElementById('nav-catalog');
+            const navTracker = document.getElementById('nav-tracker');
+
+            if (tab === 'catalog') {
+                catalogView.classList.remove('hidden');
+                trackerView.classList.add('hidden');
+                navCatalog.className = 'px-4 py-2 rounded-lg font-semibold text-sm transition-all flex items-center gap-2 bg-brand-50 text-brand-600';
+                navTracker.className = 'px-4 py-2 rounded-lg font-semibold text-sm transition-all flex items-center gap-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 relative';
+            } else {
+                catalogView.classList.add('hidden');
+                trackerView.classList.remove('hidden');
+                navTracker.className = 'px-4 py-2 rounded-lg font-semibold text-sm transition-all flex items-center gap-2 bg-brand-50 text-brand-600 relative';
+                navCatalog.className = 'px-4 py-2 rounded-lg font-semibold text-sm transition-all flex items-center gap-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900';
+                renderTrackerView();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Filter Logic
+        function refreshDynamicFilterOptions() {
+            const countrySelect = document.getElementById('filter-country');
+            const degreeSelect = document.getElementById('filter-degree');
+            const fundingSelect = document.getElementById('filter-funding');
+            const selectedValues = {
+                country: countrySelect.value,
+                degree: degreeSelect.value,
+                funding: fundingSelect.value,
+            };
+            const dynamicOptions = document.querySelectorAll('option[data-catalog-option]');
+            dynamicOptions.forEach(option => option.remove());
+            const addOptions = (select, values, labelFor) => {
+                const existingValues = new Set(Array.from(select.options, option => option.value));
+                Array.from(new Set(values))
+                    .filter(value => value && !existingValues.has(value))
+                    .sort((a, b) => a.localeCompare(b))
+                    .forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.textContent = labelFor(value);
+                        option.dataset.catalogOption = 'true';
+                        select.appendChild(option);
+                    });
+            };
+
+            addOptions(countrySelect, UNIVERSITIES_DATA.map(uni => uni.country), value => value);
+            addOptions(degreeSelect, UNIVERSITIES_DATA.flatMap(uni => uni.degrees || []), degreeName);
+            addOptions(
+                fundingSelect,
+                UNIVERSITIES_DATA.flatMap(uni => [
+                    uni.fundingType,
+                    ...Object.values(uni.fundingByDegree || {}).flatMap(value => Array.isArray(value) ? value : [value]),
+                ]),
+                fundingName,
+            );
+            if (Array.from(countrySelect.options).some(option => option.value === selectedValues.country)) countrySelect.value = selectedValues.country;
+            if (Array.from(degreeSelect.options).some(option => option.value === selectedValues.degree)) degreeSelect.value = selectedValues.degree;
+            if (Array.from(fundingSelect.options).some(option => option.value === selectedValues.funding)) fundingSelect.value = selectedValues.funding;
+        }
+
+        async function loadUniversityCatalog() {
+            const status = document.getElementById('catalog-load-error');
+            try {
+                const response = await fetch('/api/universities', { cache: 'no-store' });
+                if (!response.ok) throw new Error(`Catalog API returned HTTP ${response.status}`);
+                const catalog = await response.json();
+                if (!Array.isArray(catalog)) throw new Error('Catalog API returned an invalid response');
+
+                UNIVERSITIES_DATA = catalog;
+                status.classList.add('hidden');
+                refreshDynamicFilterOptions();
+                applyFilters();
+                renderTrackerView();
+            } catch (error) {
+                console.error('Could not load the SQLite university catalog:', error);
+                status.textContent = currentLanguage === 'en'
+                    ? 'Could not connect to the SQLite catalog. Start it with “python server.py”; the built-in sample catalog is shown for now.'
+                    : 'Не удалось подключиться к каталогу SQLite. Запустите сервер командой «python server.py»; пока показан встроенный пример каталога.';
+                status.classList.remove('hidden');
+            }
+        }
+
+        function applyFilters() {
+            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+            const countryFilter = document.getElementById('filter-country').value;
+            const residencyFilter = document.getElementById('filter-residency').value;
+            const degreeFilter = document.getElementById('filter-degree').value;
+            const fundingFilter = document.getElementById('filter-funding').value;
+            const sortVal = document.getElementById('sort-select').value;
+
+            let filtered = UNIVERSITIES_DATA.filter(uni => {
+                // Search query match
+                const matchesSearch = uni.name.toLowerCase().includes(searchQuery) ||
+                                      uni.country.toLowerCase().includes(searchQuery) ||
+                                      translate(uni.country).toLowerCase().includes(searchQuery) ||
+                                      uni.city.toLowerCase().includes(searchQuery) ||
+                                      translate(uni.city).toLowerCase().includes(searchQuery);
+
+                // Country match
+                const matchesCountry = (countryFilter === 'all') || (uni.country === countryFilter);
+
+                // Residency match logic
+                let matchesResidency = true;
+                if (residencyFilter === 'yes') {
+                    matchesResidency = uni.residencyAvailable === true;
+                }
+
+                // Degree match
+                const matchesDegree = (degreeFilter === 'all') || uni.degrees.includes(degreeFilter);
+
+                // Funding match applies to the selected degree, or any offered degree.
+                const fundingDegrees = degreeFilter === 'all' ? uni.degrees : [degreeFilter];
+                const matchesFunding = fundingFilter === 'all' ||
+                    fundingDegrees.some(degree => fundingFor(uni, degree).includes(fundingFilter));
+
+                return matchesSearch && matchesCountry && matchesResidency && matchesDegree && matchesFunding;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                if (sortVal === 'qs') return a.qsRank - b.qsRank;
+                if (sortVal === 'the') return a.theRank - b.theRank;
+                if (sortVal === 'shanghai') return a.shanghaiRank - b.shanghaiRank;
+                if (sortVal === 'name') return a.name.localeCompare(b.name);
+                return 0;
+            });
+
+            renderGrid(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-country').value = 'all';
+            document.getElementById('filter-residency').value = 'no';
+            document.getElementById('filter-degree').value = 'all';
+            document.getElementById('filter-funding').value = 'all';
+            document.getElementById('sort-select').value = 'qs';
+            applyFilters();
+        }
+
+        // Render Cards Grid
+        function universityLogoUrl(uni) {
+            try {
+                return `${new URL(uni.officialUrl).origin}/favicon.ico`;
+            } catch (error) {
+                console.error(`Invalid official URL for ${uni.name}:`, error);
+                return '';
+            }
+        }
+
+        function handleUniversityLogoError(image, id) {
+            const uni = UNIVERSITIES_DATA.find(item => item.id === id);
+            if (!uni) return;
+            if (!image.dataset.googleFallback) {
+                image.dataset.googleFallback = 'true';
+                try {
+                    const host = new URL(uni.officialUrl).hostname;
+                    image.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=128`;
+                    return;
+                } catch (error) {
+                    console.error(`Invalid official URL for ${uni.name}:`, error);
+                }
+            }
+            if (image.id === 'modal-logo') {
+                const initials = uni.name.slice(0, 2).toUpperCase();
+                image.onerror = null;
+                image.src = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#f0f6ff"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="700" fill="#1e40af">${initials}</text></svg>`)}`;
+                image.alt = initials;
+                return;
+            }
+            const fallback = document.createElement('span');
+            fallback.className = 'text-sm font-extrabold text-brand-700';
+            fallback.textContent = uni.name.slice(0, 2).toUpperCase();
+            image.replaceWith(fallback);
+        }
+
+        function handleCampusImageError(image) {
+            if (image.dataset.fallback) return;
+            image.dataset.fallback = 'true';
+            image.src = 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=85';
+            const credit = document.getElementById('modal-image-credit');
+            credit.href = 'https://unsplash.com/license';
+            credit.textContent = translate('Иллюстративное фото · Unsplash');
+            console.warn('University campus photo failed to load; showing an illustrative fallback image.');
+        }
+
+        function handleCardCampusImageError(image, id) {
+            if (image.dataset.fallback) return;
+            image.dataset.fallback = 'true';
+            image.src = 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=85';
+            const credit = document.getElementById(`campus-credit-${id}`);
+            if (credit) {
+                credit.href = 'https://unsplash.com/license';
+                credit.textContent = translate('Иллюстративное фото · Unsplash');
+            }
+        }
+
+        function fundingMarkup(uni) {
+            return uni.degrees.map(degree => `
+                <span class="inline-flex flex-wrap items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1">
+                    <span class="text-slate-500">${degreeName(degree)}</span>
+                    <span>${fundingFor(uni, degree).map((funding, index) => `${index ? ', ' : ''}<strong class="${funding === 'Full scholarship' ? 'text-emerald-700' : 'text-amber-700'}">${fundingName(funding)}</strong>`).join('')}</span>
+                </span>
+            `).join('');
+        }
+
+        function renderGrid(universities) {
+            const grid = document.getElementById('university-grid');
+            const emptyState = document.getElementById('empty-state');
+            const countEl = document.getElementById('universities-count');
+
+            countEl.textContent = universities.length;
+            grid.innerHTML = '';
+
+            if (universities.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            universities.forEach(uni => {
+                const isSaved = savedTracker.some(item => item.id === uni.id);
+                const logoUrl = universityLogoUrl(uni);
+                const imageSource = uni.campusImage || 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=85';
+                
+                const card = document.createElement('div');
+                card.className = "overflow-hidden bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex flex-col justify-between group";
+
+                card.innerHTML = `
+                    <div class="relative h-32 overflow-hidden bg-slate-200">
+                        <img src="${imageSource}" alt="${translate('Фото кампуса')} — ${uni.name}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" onerror="handleCardCampusImageError(this, '${uni.id}')">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/10"></div>
+                        <a id="campus-credit-${uni.id}" href="${uni.campusImageSource || uni.officialUrl}" target="_blank" rel="noopener noreferrer" title="${translate(uni.campusImageCredit || 'Фото кампуса · Wikimedia Commons')}" class="absolute right-3 top-3 max-w-[65%] truncate rounded-md bg-slate-950/60 px-2 py-1 text-[9px] font-semibold text-white/90 backdrop-blur">${translate(uni.campusImageCredit || 'Фото кампуса · Wikimedia Commons')}</a>
+                        <div class="absolute bottom-3 left-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/70 bg-white p-1 shadow-lg">
+                            <img src="${logoUrl}" alt="${uni.name}" class="h-full w-full object-contain" loading="lazy" onerror="handleUniversityLogoError(this, '${uni.id}')">
+                        </div>
+                        <span class="absolute bottom-4 left-[4.5rem] text-xs font-bold text-white drop-shadow">${uni.flag} ${translate(uni.country)}</span>
+                    </div>
+                    <div class="flex flex-1 flex-col justify-between p-5">
+                    <div class="space-y-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-brand-600 transition cursor-pointer" onclick="openModal('${uni.id}')">${uni.name}</h3>
+                                <p class="text-xs text-slate-500 font-medium">${translate(uni.city)}</p>
+                            </div>
+                        </div>
+
+                        <!-- Ratings Badges -->
+                        <div class="flex items-center gap-2 text-[11px] font-semibold text-slate-600">
+                            <span class="bg-slate-100 px-2 py-0.5 rounded">QS: #${uni.qsRank}</span>
+                            <span class="bg-slate-100 px-2 py-0.5 rounded">THE: #${uni.theRank}</span>
+                            <span class="bg-slate-100 px-2 py-0.5 rounded">Shanghai: #${uni.shanghaiRank}</span>
+                        </div>
+
+                        <div class="text-xs text-slate-600 space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                            <div><strong class="text-slate-700">${translate('Степени:')}</strong> ${uni.degrees.map(degreeName).join(', ')}</div>
+                            <div><strong class="text-slate-700">${translate('Тесты:')}</strong> ${translate(uni.reqTests)}</div>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 text-[10px]">${fundingMarkup(uni)}</div>
+                    </div>
+
+                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center gap-2">
+                        <button onclick="openModal('${uni.id}')" class="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
+                            ${translate('Подробнее')}
+                        </button>
+                        <button onclick="toggleSaveTracker('${uni.id}')" class="py-2 px-3.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${isSaved ? 'bg-emerald-500 text-white' : 'bg-brand-600 hover:bg-brand-700 text-white'}">
+                            <i class="fa-solid ${isSaved ? 'fa-check' : 'fa-plus'}"></i> ${isSaved ? translate('Сохранено') : translate('В трекер')}
+                        </button>
+                    </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ================= MODAL LOGIC =================
+        function openModal(id) {
+            const uni = UNIVERSITIES_DATA.find(u => u.id === id);
+            if (!uni) return;
+
+            const isSaved = savedTracker.some(item => item.id === uni.id);
+
+            document.getElementById('modal-flag').textContent = uni.flag;
+            document.getElementById('modal-country').textContent = translate(uni.country);
+            document.getElementById('modal-grant-badge').textContent = translate('Гранты по уровню обучения');
+            document.getElementById('modal-title').textContent = uni.name;
+            document.getElementById('modal-sub').textContent = translate(uni.city);
+            const modalCampusImage = document.getElementById('modal-campus-image');
+            modalCampusImage.src = uni.campusImage || 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=85';
+            modalCampusImage.alt = `${translate('Фото кампуса')} — ${uni.name}`;
+            modalCampusImage.dataset.fallback = '';
+            document.getElementById('modal-image-credit').textContent = translate(uni.campusImageCredit || 'Фото кампуса · Wikimedia Commons');
+            document.getElementById('modal-logo').src = universityLogoUrl(uni);
+            document.getElementById('modal-logo').alt = `${uni.name} ${currentLanguage === 'en' ? 'logo' : 'логотип'}`;
+            document.getElementById('modal-logo').dataset.googleFallback = '';
+            document.getElementById('modal-logo').onerror = () => handleUniversityLogoError(document.getElementById('modal-logo'), uni.id);
+            document.getElementById('modal-image-credit').href = uni.campusImageSource || uni.officialUrl;
+
+            document.getElementById('modal-qs').textContent = `#${uni.qsRank}`;
+            document.getElementById('modal-the').textContent = `#${uni.theRank}`;
+            document.getElementById('modal-shanghai').textContent = `#${uni.shanghaiRank}`;
+
+            document.getElementById('modal-req-cv').textContent = translate(uni.reqCV);
+            document.getElementById('modal-req-video').textContent = translate(uni.reqVideo);
+            document.getElementById('modal-req-interview').textContent = translate(uni.reqInterview);
+            document.getElementById('modal-req-tests').textContent = translate(uni.reqTests);
+
+            document.getElementById('modal-degrees').textContent = uni.degrees.map(degreeName).join(', ');
+            document.getElementById('modal-residency-access').textContent = translate(uni.residencyAvailable ? 'Да (включая локальные квоты)' : 'Только международные конкурсы');
+
+            const fundingRows = document.getElementById('modal-funding-by-degree');
+            fundingRows.innerHTML = uni.degrees.map(degree => `
+                <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                    <span class="block text-[11px] font-bold uppercase tracking-wide text-slate-400">${degreeName(degree)}</span>
+                    <div class="mt-1 text-sm">${fundingFor(uni, degree).map((funding, index) => `${index ? ', ' : ''}<strong class="font-extrabold ${funding === 'Full scholarship' ? 'text-emerald-700' : 'text-amber-700'}">${fundingName(funding)}</strong>`).join('')}</div>
+                </div>
+            `).join('');
+
+            // Essay Prompts Render
+            const essayList = document.getElementById('modal-essays-list');
+            essayList.innerHTML = uni.essays.map(prompt => `
+                <li class="bg-slate-50 border border-slate-200/80 p-3 rounded-xl text-xs text-slate-700 font-medium flex items-start gap-2">
+                    <i class="fa-solid fa-quote-left text-brand-400 mt-0.5"></i>
+                    <span>${translate(prompt)}</span>
+                </li>
+            `).join('');
+
+            document.getElementById('modal-link-official').href = uni.officialUrl;
+
+            const addBtn = document.getElementById('modal-add-btn');
+            addBtn.innerHTML = isSaved ? `<i class="fa-solid fa-check"></i> ${translate('Сохранено в кабинете')}` : `<i class="fa-solid fa-plus"></i> ${translate('Добавить в Мой кабинет')}`;
+            addBtn.className = isSaved ? 'w-full sm:w-auto px-6 py-2.5 bg-emerald-600 text-white font-bold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2' : 'w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl transition shadow-md shadow-brand-500/20 flex items-center justify-center gap-2';
+            addBtn.onclick = () => {
+                toggleSaveTracker(uni.id);
+                openModal(uni.id); // Refresh button
+            };
+
+            document.getElementById('uni-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('uni-modal').classList.add('hidden');
+        }
+
+        // ================= TRACKER & LOCALSTORAGE LOGIC =================
+        function toggleSaveTracker(id) {
+            const index = savedTracker.findIndex(item => item.id === id);
+
+            if (index > -1) {
+                savedTracker.splice(index, 1);
+            } else {
+                const university = UNIVERSITIES_DATA.find(uni => uni.id === id);
+                savedTracker.push({
+                    id: id,
+                    status: 'Планирую подать',
+                    checklist: UniMatchChecklist.build(university),
+                    university
+                });
+            }
+
+            localStorage.setItem('unimatch_tracker', JSON.stringify(savedTracker));
+            updateTrackerBadges();
+            applyFilters();
+            renderTrackerView();
+        }
+
+        function updateTrackerBadges() {
+            const count = savedTracker.length;
+            const desktopBadge = document.getElementById('tracker-badge');
+            const mobileBadge = document.getElementById('mobile-tracker-badge');
+            const totalCount = document.getElementById('tracker-total-count');
+            if (desktopBadge) desktopBadge.textContent = count;
+            if (mobileBadge) mobileBadge.textContent = count;
+            if (totalCount) totalCount.textContent = count;
+
+            if (desktopBadge) desktopBadge.classList.toggle('hidden', count === 0);
+            if (mobileBadge) mobileBadge.classList.toggle('hidden', count === 0);
+        }
+
+        function updateStatus(id, newStatus) {
+            const item = savedTracker.find(i => i.id === id);
+            if (item) {
+                item.status = newStatus;
+                localStorage.setItem('unimatch_tracker', JSON.stringify(savedTracker));
+                renderTrackerView();
+            }
+        }
+
+        function toggleChecklistItem(uniId, checkId) {
+            const item = savedTracker.find(i => i.id === uniId);
+            if (item) {
+                const check = item.checklist.find(c => c.id === checkId);
+                if (check) {
+                    check.done = !check.done;
+                    localStorage.setItem('unimatch_tracker', JSON.stringify(savedTracker));
+                    renderTrackerView();
+                }
+            }
+        }
+
+        function renderTrackerView() {
+            const trackerList = document.getElementById('tracker-list');
+            const trackerEmpty = document.getElementById('tracker-empty');
+
+            if (savedTracker.length === 0) {
+                trackerList.innerHTML = '';
+                trackerEmpty.classList.remove('hidden');
+                return;
+            }
+
+            trackerEmpty.classList.add('hidden');
+            trackerList.innerHTML = '';
+
+            savedTracker.forEach(savedItem => {
+                const uni = UNIVERSITIES_DATA.find(u => u.id === savedItem.id);
+                if (!uni) return;
+
+                savedItem.checklist = UniMatchChecklist.build(uni, savedItem.checklist);
+                const completedCount = savedItem.checklist.filter(c => c.done).length;
+                const progressPct = Math.round((completedCount / savedItem.checklist.length) * 100);
+
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4";
+
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                            <img src="${universityLogoUrl(uni)}" alt="${uni.name} logo" class="h-9 w-9 rounded-lg border border-slate-200 bg-white p-1 object-contain" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className:'text-lg', textContent:'${uni.flag}'}))">
+                                            <span class="text-sm">${uni.flag}</span>
+                                            <h3 class="font-bold text-slate-900 text-lg">${uni.name}</h3>
+                                        </div>
+                                        <p class="text-xs text-slate-500 font-medium">${translate(uni.city)}</p>
+                                        <div class="mt-2 flex flex-wrap gap-1.5 text-[10px]">${fundingMarkup(uni)}</div>
+                        </div>
+
+                        <!-- Status Select Dropdown -->
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs text-slate-400 font-bold uppercase">${translate('Статус:')}</label>
+                            <select onchange="updateStatus('${uni.id}', this.value)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="Планирую подать" ${savedItem.status === 'Планирую подать' ? 'selected' : ''}>${translate('Планирую подать')}</option>
+                                <option value="В процессе сбора документов" ${savedItem.status === 'В процессе сбора документов' ? 'selected' : ''}>${translate('В процессе сбора')}</option>
+                                <option value="Заявка отправлена" ${savedItem.status === 'Заявка отправлена' ? 'selected' : ''}>${translate('Заявка отправлена')}</option>
+                                <option value="Получен оффер" ${savedItem.status === 'Получен оффер' ? 'selected' : ''}>🎉 ${translate('Получен оффер')}</option>
+                                <option value="Отказ" ${savedItem.status === 'Отказ' ? 'selected' : ''}>${translate('Отказ')}</option>
+                            </select>
+                            <button onclick="toggleSaveTracker('${uni.id}')" title="${translate('Удалить университет из кабинета')}" class="text-slate-400 hover:text-rose-500 p-2 transition">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-xs font-bold">
+                            <span class="text-slate-600">${translate('Готовность документов')}</span>
+                            <span class="text-brand-600">${progressPct}% (${completedCount}/${savedItem.checklist.length})</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-500 to-emerald-500 transition-all duration-300" style="width: ${progressPct}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Checklist -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-2">
+                        ${savedItem.checklist.map(check => `
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-xl border ${check.done ? 'bg-emerald-50/50 border-emerald-200 text-slate-800' : 'bg-slate-50 border-slate-200/60 text-slate-600'} cursor-pointer hover:bg-slate-100 transition text-xs font-medium">
+                                <input type="checkbox" ${check.done ? 'checked' : ''} onchange="toggleChecklistItem('${uni.id}', '${check.id}')" class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                                <span class="flex flex-col gap-1">
+                                    <span class="${check.done ? 'line-through text-slate-400' : ''}">${translate(check.label)}</span>
+                                    ${check.detail ? `<span class="text-[10px] font-normal text-slate-400">${translate(check.detail)}</span>` : ''}
+                                </span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+
+                trackerList.appendChild(card);
+            });
+        }
+    </script>
+    <script src="supabase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

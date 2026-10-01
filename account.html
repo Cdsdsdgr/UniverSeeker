@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru" class="min-h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8fafc">
+    <title>Мой кабинет — UniverSeeker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#f0f6ff',
+                            100: '#e0edff',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            800: '#1e3a8a',
+                            900: '#1e1b4b'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        @media (max-width: 399px) {
+            .top-nav-label, .compact-nav-label { display: none !important; }
+            .top-nav { gap: 0.125rem; }
+            .top-nav-link { padding-left: 0.375rem !important; padding-right: 0.375rem !important; }
+            .top-nav-link i { margin-right: 0 !important; }
+        }
+        @media (max-width: 359px) {
+            .mobile-nav-label { display: none; }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+    <script src="warning-banner.js"></script>
+
+    <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur">
+        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="hou.html" class="flex shrink-0 items-center gap-3" aria-label="UniverSeeker — каталог университетов">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-brand-700 to-brand-500 text-white shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </span>
+                <span class="bg-gradient-to-r from-brand-800 via-brand-600 to-brand-500 bg-clip-text text-lg font-extrabold tracking-tight text-transparent sm:text-xl">UniverSeeker</span>
+            </a>
+            <nav class="top-nav flex items-center gap-1 sm:gap-2" aria-label="Основная навигация">
+                <a href="hou.html" aria-label="Каталог вузов" class="top-nav-link rounded-xl px-2 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 sm:px-4">
+                    <i class="fa-solid fa-compass mr-1.5"></i><span class="top-nav-label">Каталог вузов</span><span class="compact-nav-label hidden max-[399px]:inline">Каталог</span>
+                </a>
+                <a href="account.html" aria-label="Мой кабинет" class="top-nav-link rounded-xl bg-brand-50 px-2 py-2 text-sm font-bold text-brand-700 sm:px-4">
+                    <i class="fa-solid fa-list-check mr-1.5"></i><span class="top-nav-label">Мой кабинет</span><span class="compact-nav-label hidden max-[399px]:inline">Кабинет</span>
+                </a>
+                <a href="auth.html" data-auth-guest class="top-nav-link rounded-xl px-2 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 sm:px-3" aria-label="Войти или зарегистрироваться">
+                    <i class="fa-solid fa-user mr-1 sm:mr-1.5"></i><span class="top-nav-label">Войти</span>
+                </a>
+                <div data-auth-user class="hidden max-w-36 flex items-center gap-2">
+                    <span data-auth-email class="hidden truncate text-xs font-semibold text-slate-600 lg:inline"></span>
+                    <button data-auth-signout class="rounded-lg px-2 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100" aria-label="Выйти"><i class="fa-solid fa-arrow-right-from-bracket"></i><span class="top-nav-label ml-1">Выйти</span></button>
+                </div>
+                <button data-language-toggle onclick="toggleLanguage()" class="rounded-lg border border-slate-200 px-2 py-2 text-xs font-extrabold text-slate-600 transition hover:bg-slate-100 sm:px-3" aria-label="Switch language">EN</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl space-y-7 px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-900 via-brand-800 to-slate-900 p-6 text-white shadow-xl sm:p-9">
+            <div class="relative z-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+                <div class="max-w-2xl">
+                    <p class="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold text-blue-100">
+                        <i class="fa-solid fa-sparkles"></i> Твой план поступления
+                    </p>
+                    <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Мой кабинет</h1>
+                    <p class="mt-3 max-w-xl text-sm leading-relaxed text-blue-100/80 sm:text-base">
+                        Все выбранные университеты, этапы подачи и документы — в одном месте.
+                    </p>
+                </div>
+                <a href="hou.html" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-extrabold text-brand-800 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50">
+                    <i class="fa-solid fa-plus"></i> Найти университет
+                </a>
+            </div>
+            <div class="pointer-events-none absolute -bottom-24 -right-10 h-64 w-64 rounded-full bg-blue-400/20 blur-3xl"></div>
+            <div class="pointer-events-none absolute -right-10 -top-24 h-56 w-56 rounded-full bg-indigo-400/20 blur-3xl"></div>
+        </section>
+
+        <div id="storage-error" class="hidden rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800" role="alert"></div>
+
+        <section class="grid grid-cols-1 gap-4 sm:grid-cols-3" aria-label="Сводка поступления">
+            <article class="flex items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-xl text-brand-600"><i class="fa-solid fa-bookmark"></i></span>
+                <div><p class="text-xs font-bold uppercase tracking-wide text-slate-400">В избранном</p><p id="summary-total" class="mt-1 text-2xl font-extrabold text-slate-900">0</p></div>
+            </article>
+            <article class="flex items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-xl text-amber-600"><i class="fa-solid fa-file-circle-check"></i></span>
+                <div><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Документы в работе</p><p id="summary-docs" class="mt-1 text-2xl font-extrabold text-slate-900">0</p></div>
+            </article>
+            <article class="flex items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-xl text-emerald-600"><i class="fa-solid fa-paper-plane"></i></span>
+                <div><p class="text-xs font-bold uppercase tracking-wide text-slate-400">Заявки отправлены</p><p id="summary-submitted" class="mt-1 text-2xl font-extrabold text-slate-900">0</p></div>
+            </article>
+        </section>
+
+        <section class="space-y-4">
+            <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900">Мои университеты</h2>
+                    <p class="mt-1 text-sm text-slate-500">Обновляй этап заявки и отмечай готовые документы.</p>
+                </div>
+                <span id="list-count" class="text-sm font-semibold text-slate-500"></span>
+            </div>
+            <div id="university-list" class="space-y-4"></div>
+            <div id="empty-state" class="hidden rounded-3xl border border-dashed border-slate-300 bg-white px-5 py-14 text-center shadow-sm">
+                <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-2xl text-brand-500"><i class="fa-solid fa-bookmark"></i></span>
+                <h3 class="mt-4 text-lg font-extrabold text-slate-900">Пока нет сохранённых вузов</h3>
+                <p class="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-500">Добавь университеты из каталога — здесь появятся статусы заявок и чек-листы документов.</p>
+                <a href="hou.html" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700">
+                    <i class="fa-solid fa-compass"></i> Открыть каталог
+                </a>
+            </div>
+        </section>
+        <p class="text-center text-xs leading-relaxed text-slate-400">
+            Пока данные сохраняются только в этом браузере. Для синхронизации между устройствами понадобится аккаунт с серверным хранилищем.
+        </p>
+    </main>
+
+    <script src="application-checklist.js"></script>
+    <script src="i18n.js"></script>
+    <script src="supabase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script>
+        const STORAGE_KEY = 'unimatch_tracker';
+        const FALLBACK_UNIVERSITIES = {
+            princeton: { name: 'Princeton University', country: 'США', flag: '🇺🇸', city: 'Принстон, Нью-Джерси', fundingType: 'Full scholarship', officialUrl: 'https://www.princeton.edu' },
+            tsinghua: { name: 'Tsinghua University', country: 'Китай', flag: '🇨🇳', city: 'Пекин', fundingType: 'Full scholarship', officialUrl: 'https://www.tsinghua.edu.cn/en/' },
+            nus: { name: 'National University of Singapore (NUS)', country: 'Сингапур', flag: '🇸🇬', city: 'Сингапур', fundingType: 'Full scholarship', officialUrl: 'https://nus.edu.sg' },
+            nu_kz: { name: 'Nazarbayev University', country: 'Казахстан', flag: '🇰🇿', city: 'Астана', fundingType: 'Full scholarship', officialUrl: 'https://nu.edu.kz' },
+            oxford: { name: 'University of Oxford', country: 'Великобритания', flag: '🇬🇧', city: 'Оксфорд', fundingType: 'Partial scholarship', officialUrl: 'https://www.ox.ac.uk' },
+            kaist: { name: 'KAIST', country: 'Южная Корея', flag: '🇰🇷', city: 'Тэджон', fundingType: 'Full scholarship', officialUrl: 'https://www.kaist.ac.kr/en/' },
+            xidian: { name: 'Xidian University', country: 'Китай', flag: '🇨🇳', city: 'Сиань', fundingType: 'Full scholarship', officialUrl: 'https://en.xidian.edu.cn' }
+        };
+        const APPLICATION_STATUSES = [
+            'Планирую подать',
+            'В процессе сбора документов',
+            'Заявка отправлена',
+            'Получен оффер',
+            'Отказ'
+        ];
+        const list = document.getElementById('university-list');
+        const errorBox = document.getElementById('storage-error');
+        let savedTracker = [];
+        const t = value => UniMatchI18n.t(value);
+
+        function showError(message) {
+            errorBox.textContent = message;
+            errorBox.classList.remove('hidden');
+        }
+
+        function persist() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(savedTracker));
+                errorBox.classList.add('hidden');
+                return true;
+            } catch (error) {
+                showError('Не удалось сохранить изменения в браузере. Проверь свободное место и настройки хранилища.');
+                console.error('UniMatch storage error:', error);
+                return false;
+            }
+        }
+
+        function createElement(tag, className, text) {
+            const element = document.createElement(tag);
+            element.className = className;
+            if (text !== undefined) element.textContent = text;
+            return element;
+        }
+
+        function normalizeChecklist(item) {
+            const stored = Array.isArray(item.checklist) ? item.checklist : [];
+            return UniMatchChecklist.build(item.university || FALLBACK_UNIVERSITIES[item.id], stored);
+        }
+
+        function renderCard(item) {
+            const uni = item.university || FALLBACK_UNIVERSITIES[item.id] || {
+                name: `Университет (${item.id})`, country: '', flag: '🎓', city: '', fundingType: 'Уточнить финансирование'
+            };
+            item.checklist = normalizeChecklist(item);
+            const doneCount = item.checklist.filter(check => check.done).length;
+            const percent = Math.round(doneCount / item.checklist.length * 100);
+            const card = createElement('article', 'overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition hover:shadow-md');
+            const top = createElement('div', 'flex flex-col justify-between gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center');
+            const titleGroup = createElement('div', 'min-w-0');
+            const identity = createElement('div', 'flex items-center gap-2.5');
+            const logo = createElement('img', 'h-10 w-10 rounded-xl border border-slate-200 bg-white p-1 object-contain');
+            if (uni.officialUrl) {
+                try {
+                    logo.src = `${new URL(uni.officialUrl).origin}/favicon.ico`;
+                } catch (error) {
+                    console.error(`Invalid official URL for ${uni.name}:`, error);
+                }
+            }
+            logo.alt = `${uni.name || 'University'} logo`;
+            logo.onerror = () => {
+                if (!logo.dataset.googleFallback && uni.officialUrl) {
+                    logo.dataset.googleFallback = 'true';
+                    logo.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(new URL(uni.officialUrl).hostname)}&sz=128`;
+                    return;
+                }
+                const fallback = createElement('span', 'flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-sm font-extrabold text-brand-700', (uni.name || 'U').slice(0, 2).toUpperCase());
+                logo.replaceWith(fallback);
+            };
+            identity.append(logo, createElement('span', 'text-xl', uni.flag || '🎓'), createElement('h3', 'truncate text-lg font-extrabold text-slate-900', uni.name || t('Университет')));
+            const degrees = uni.degrees || Object.keys(uni.fundingByDegree || {});
+            const fundingText = degrees.length
+                ? degrees.map(degree => {
+                    const funding = (uni.fundingByDegree || {})[degree] || uni.fundingType || 'Self-funded';
+                    const fundingTypes = Array.isArray(funding) ? funding : [funding];
+                    return `${UniMatchI18n.degree(degree)}: ${fundingTypes.map(UniMatchI18n.funding).join(', ')}`;
+                }).join(' · ')
+                : UniMatchI18n.funding(uni.fundingType || '');
+            titleGroup.append(identity, createElement('p', 'mt-1 text-xs font-medium text-slate-500', [t(uni.city || ''), t(uni.country || ''), fundingText].filter(Boolean).join(' · ')));
+
+            const controls = createElement('div', 'flex flex-wrap items-center gap-2');
+            const statusLabel = createElement('label', 'sr-only', t('Статус заявки'));
+            statusLabel.htmlFor = `status-${item.id}`;
+            const status = createElement('select', 'min-w-48 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-bold text-brand-700 outline-none transition focus:ring-2 focus:ring-brand-500');
+            status.id = `status-${item.id}`;
+            status.setAttribute('aria-label', `${t('Статус заявки')}: ${uni.name || t('Университет')}`);
+            APPLICATION_STATUSES.forEach(value => {
+                const option = createElement('option', '', t(value));
+                option.value = value;
+                option.selected = item.status === value;
+                status.append(option);
+            });
+            status.addEventListener('change', () => {
+                item.status = status.value;
+                if (persist()) render();
+            });
+            const remove = createElement('button', 'flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-rose-50 hover:text-rose-600');
+            remove.type = 'button';
+            remove.title = t('Удалить университет из кабинета');
+            remove.setAttribute('aria-label', `${remove.title}: ${uni.name || t('Университет')}`);
+            remove.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
+            remove.addEventListener('click', () => {
+                savedTracker = savedTracker.filter(entry => entry.id !== item.id);
+                if (persist()) render();
+            });
+            controls.append(statusLabel, status, remove);
+            top.append(titleGroup, controls);
+
+            const content = createElement('div', 'space-y-5 p-5');
+            const progressWrap = createElement('div', 'space-y-2');
+            const progressText = createElement('div', 'flex items-center justify-between gap-2 text-xs font-bold');
+            progressText.append(createElement('span', 'text-slate-600', t('Готовность документов')), createElement('span', 'text-brand-600', `${percent}% · ${doneCount}/${item.checklist.length}`));
+            const track = createElement('div', 'h-2.5 overflow-hidden rounded-full bg-slate-100');
+            const bar = createElement('div', 'h-full rounded-full bg-gradient-to-r from-brand-500 to-emerald-500 transition-all duration-300');
+            bar.style.width = `${percent}%`;
+            track.append(bar);
+            progressWrap.append(progressText, track);
+
+            const checklist = createElement('div', 'grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3');
+            item.checklist.forEach(check => {
+                const label = createElement('label', `flex cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-xs font-semibold transition ${check.done ? 'border-emerald-200 bg-emerald-50/70 text-slate-600' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`);
+                const checkbox = createElement('input', 'h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500');
+                checkbox.type = 'checkbox';
+                checkbox.checked = check.done;
+                checkbox.addEventListener('change', () => {
+                    check.done = checkbox.checked;
+                    if (persist()) render();
+                });
+                const text = createElement('span', 'flex min-w-0 flex-col gap-1');
+                text.append(createElement('span', check.done ? 'line-through decoration-slate-400' : '', t(check.label)));
+                if (check.detail) text.append(createElement('span', 'text-[10px] font-normal text-slate-400', t(check.detail)));
+                label.append(checkbox, text);
+                checklist.append(label);
+            });
+            content.append(progressWrap, checklist);
+            card.append(top, content);
+            if (uni.officialUrl) {
+                const footer = createElement('div', 'border-t border-slate-100 px-5 py-3');
+                const link = createElement('a', 'inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 transition hover:text-brand-800', t('Официальный сайт'));
+                link.href = uni.officialUrl;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.append(createElement('i', 'fa-solid fa-arrow-up-right-from-square text-[10px]'));
+                footer.append(link);
+                card.append(footer);
+            }
+            return card;
+        }
+
+        function render() {
+            list.replaceChildren();
+            const submitted = savedTracker.filter(item => ['Заявка отправлена', 'Получен оффер'].includes(item.status)).length;
+            const inProgress = savedTracker.filter(item => item.checklist.some(check => check.done)).length;
+            document.getElementById('summary-total').textContent = savedTracker.length;
+            document.getElementById('summary-docs').textContent = inProgress;
+            document.getElementById('summary-submitted').textContent = submitted;
+            const countWord = UniMatchI18n.language === 'en'
+                ? (savedTracker.length === 1 ? 'university' : 'universities')
+                : (savedTracker.length === 1 ? 'университет' : savedTracker.length < 5 ? 'университета' : 'университетов');
+            document.getElementById('list-count').textContent = savedTracker.length ? `${savedTracker.length} ${countWord}` : '';
+            document.getElementById('empty-state').classList.toggle('hidden', savedTracker.length !== 0);
+            savedTracker.forEach(item => list.append(renderCard(item)));
+        }
+
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            const parsed = stored ? JSON.parse(stored) : [];
+            if (!Array.isArray(parsed)) throw new TypeError('Saved tracker must be an array');
+            savedTracker = parsed.filter(item => item && typeof item.id === 'string');
+        } catch (error) {
+            showError('Не удалось прочитать сохранённый список из браузера. Повреждённые данные не были изменены.');
+            console.error('UniMatch storage read error:', error);
+        }
+        UniMatchI18n.init();
+        window.addEventListener('unimatch-language-changed', render);
+        render();
+    </script>
+</body>
+</html>
