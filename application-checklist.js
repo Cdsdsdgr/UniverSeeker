@@ -54,7 +54,7 @@
         if (videoRequirement && !/не требуется|graded paper/i.test(videoRequirement)) {
             tasks.push({
                 id: 'video-presentation',
-                label: 'Записать видеопрезентацию',
+                label: 'Записать видеопрезентацию/дополнительные документы',
                 detail: videoRequirement
             });
         }
