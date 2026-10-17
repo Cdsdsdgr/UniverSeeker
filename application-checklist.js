@@ -1,5 +1,6 @@
 (function () {
     const BASE_TASKS = [
+        { id: 'cv', label: 'Подготовить CV' },
         { id: 'essay', label: 'Написать и проверить Эссе / Statement of Purpose' },
         { id: 'recommendations', label: 'Запросить 2-3 рекомендательных письма' },
         { id: 'transcript', label: 'Перевести и заверить транскрипт оценок' }
@@ -28,7 +29,16 @@
                 detail: languageRequirements || testRequirements
             });
         }
-
+        const reqCV = typeof university?.reqCV === 'boolean'
+            ? university.reqCC
+            : /\bSAT\b/i.test(reqCV) && !/\b(?:optional|опционально|не требуется)\b/i.test(reqCV);
+        if (reqCV) {
+            tasks.push({
+                id: 'cv',
+                label: 'Подготовить CV',
+                detail: testRequirements.match(/\bSAT\b[^/]*/i)?.[0] || 'SAT'
+            });
+        }
         const satRequired = typeof university?.satRequired === 'boolean'
             ? university.satRequired
             : /\bSAT\b/i.test(testRequirements) && !/\b(?:optional|опционально|не требуется)\b/i.test(testRequirements);
