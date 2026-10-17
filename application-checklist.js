@@ -51,7 +51,7 @@
             });
         }
 
-        if (videoRequirement && !/не требуется|graded paper/i.test(videoRequirement)) {
+        if (videoRequirement && !/не требуется|graded written paper/i.test(videoRequirement)) {
             tasks.push({
                 id: 'video-presentation',
                 label: 'Подготовить видеопрезентацию / дополнительные документы',
@@ -66,7 +66,13 @@
                 detail: interviewRequirement
             });
         }
-
+        if (cvReq && !/опционально/i.test(cvReq)) {
+            tasks.push({
+                id: 'cv',
+                label: 'Подготовить CV',
+                detail: interviewRequirement
+            });
+        }
         return tasks.map(task => {
             const ids = [task.id, ...(LEGACY_IDS[task.id] || [])];
             const previousTask = oldTasks.find(item => item && ids.includes(item.id));
