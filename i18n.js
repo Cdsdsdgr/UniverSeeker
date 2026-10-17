@@ -161,7 +161,7 @@
         'Написать эссе / мотивационное письмо': 'Write an essay / personal statement',
         'Запросить рекомендательные письма': 'Request recommendation letters',
         'Подготовить транскрипт оценок': 'Prepare academic transcripts',
-        'Подготовить видеопрезентацию/доподнительные документы': 'Prepare a video presentation/additional documents',
+        'Подготовить видеопрезентацию / дополнительные документы': 'Prepare a video presentation / additional documents',
         'Подготовить и оформить CV / Резюме': 'Prepare and format CV / resume',
         'Сдать IELTS/TOEFL/HSK': 'Take IELTS/TOEFL/HSK',
         'Подготовить SAT': 'Prepare for the SAT',
