@@ -1,6 +1,5 @@
 (function () {
     const BASE_TASKS = [
-        { id: 'cv', label: 'Подготовить и оформить CV / Резюме' },
         { id: 'essay', label: 'Написать и проверить Эссе / Statement of Purpose' },
         { id: 'recommendations', label: 'Запросить 2-3 рекомендательных письма' },
         { id: 'transcript', label: 'Перевести и заверить транскрипт оценок' }
@@ -66,7 +65,7 @@
                 detail: interviewRequirement
             });
         }
-        if (cvReq && !/опционально/i.test(cvReq)) {
+        if (reqCV && !/опционально/i.test(reqCV)) {
             tasks.push({
                 id: 'cv',
                 label: 'Подготовить CV',
