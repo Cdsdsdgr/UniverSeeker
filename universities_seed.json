@@ -16,7 +16,7 @@
     "campusImageSource": "https://commons.wikimedia.org/wiki/File:At_Princeton_University_2024_010.jpg",
     "campusImageCredit": "Фото: Mike Peel · CC BY-SA 4.0",
     "reqCV": "Опционально",
-    "addition": "Graded written paper",
+    "reqVideo": "Graded written paper",
     "reqInterview": "Опционально",
     "reqTests": "IELTS 7+ / TOEFL 100 / SAT (Optional)",
     "satRequired": false,
