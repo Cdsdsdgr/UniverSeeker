@@ -156,7 +156,7 @@
         'Получен оффер': 'Offer received',
         'Отказ': 'Rejected',
         'Готовность документов': 'Document readiness',
-        'Подготовить CV / резюме': 'Prepare CV / resume',
+        'Подготовить CV': 'Prepare CV',
         'Сдать языковой тест': 'Take a language test',
         'Написать эссе / мотивационное письмо': 'Write an essay / personal statement',
         'Запросить рекомендательные письма': 'Request recommendation letters',
